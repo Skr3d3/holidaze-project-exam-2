@@ -32,3 +32,13 @@ export type ProfileCore = {
 };
 export type ProfileWithVenues   = ProfileCore & { venues: Venue[] };
 export type ProfileWithBookings = ProfileCore & { bookings: Booking[] | BookingWithVenue[] };
+
+export type AuthLoginResponse = {
+  data: {name: string; email: string; avatar?: { url: string; alt: string };  banner?: { url: string; alt: string }; accessToken: string; venueManager?: boolean; }; 
+  meta?: unknown;
+};
+export type AuthRegisterBody = { name: string;email: string; password: string; bio?: string; avatar?: { url: string; alt?: string }; banner?: { url: string; alt?: string }; venueManager?: boolean; };
+export type ApiKeyResponse = {
+  data: { name: string; status: "ACTIVE" | string; key: string };
+  meta?: unknown;
+};
