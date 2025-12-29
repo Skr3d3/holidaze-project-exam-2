@@ -1,4 +1,3 @@
-// src/lib/auth.ts
 export function saveAuth(token: string, user: any) {
   localStorage.setItem("holidaze_token", token);
   localStorage.setItem("holidaze_user", JSON.stringify(user));

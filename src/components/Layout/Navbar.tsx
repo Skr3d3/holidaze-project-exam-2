@@ -29,6 +29,12 @@ export default function Navbar() {
             Dashboard
           </NavLink>
           <NavLink
+            to="/profile"
+            className={({ isActive }) => (isActive ? active : base)}
+          >
+            Profile
+          </NavLink>
+          <NavLink
             to="/manage/venues"
             className={({ isActive }) => (isActive ? active : base)}
           >
