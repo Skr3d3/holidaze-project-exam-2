@@ -42,19 +42,11 @@ export default function Home() {
 
         <div className="mt-6 flex items-center justify-center gap-3">
           <Link to="/venues" className="btn">Browse venues</Link>
-          {!user ? (
-            <Link to="/register" className="btn-secondary">Create account</Link>
-          ) : (
-            <Link to="/dashboard" className="btn-secondary">Go to dashboard</Link>
-          )}
+          {!user && <Link to="/register" className="btn-secondary">Create account</Link>}
+          {user?.venueManager && <Link to="/manage/venues" className="btn-secondary">Manage venues</Link>}
         </div>
-
-        {user?.venueManager && (
-          <div className="mt-3 text-xs text-gray-500">
-            Manager? <Link to="/manage/venues" className="underline">Manage your venues</Link>
-          </div>
-        )}
       </section>
+
       <section>
         <h2 className="page-heading">Featured venues</h2>
 

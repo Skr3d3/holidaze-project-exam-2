@@ -1,59 +1,61 @@
-import { Link, NavLink } from "react-router-dom";
+// src/components/Layout/Navbar.tsx
+import { useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { getUser, clearAuth } from "../../lib/auth";
 
 export default function Navbar() {
-  const base =
-    "text-sm px-2 py-1 text-gray-700 hover:text-gray-900 transition";
-  const active = "text-sm px-2 py-1 text-gray-900 font-semibold";
+  const nav = useNavigate();
+  const [userName, setUserName] = useState<string | null>(getUser<{ name: string }>()?.name ?? null);
+
+  useEffect(() => {
+    const onAuth = () => setUserName(getUser<{ name: string }>()?.name ?? null);
+    window.addEventListener("authchange", onAuth);
+    window.addEventListener("storage", onAuth);
+    return () => {
+      window.removeEventListener("authchange", onAuth);
+      window.removeEventListener("storage", onAuth);
+    };
+  }, []);
+
+  const loggedIn = !!userName;
+
+  function logout() {
+    clearAuth();
+    setUserName(null);
+    nav("/login");
+  }
+
+  const linkCls = ({ isActive }: { isActive: boolean }) =>
+    "px-3 py-2 rounded-md text-sm font-medium " +
+    (isActive ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white");
 
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <nav className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 py-4">
-        <Link to="/" className="text-lg font-semibold text-gray-900">
-          Holidaze
-        </Link>
+    <header className="bg-gray-800">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-14 items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link to="/" className="text-white font-semibold">Holidaze</Link>
+            <nav className="hidden md:flex items-center gap-1">
+              <NavLink to="/venues" className={linkCls}>Venues</NavLink>
+              {loggedIn && <NavLink to="/profile" className={linkCls}>Profile</NavLink>}
+            </nav>
+          </div>
 
-        <div className="flex gap-2">
-          <NavLink to="/" className={({ isActive }) => (isActive ? active : base)}>
-            Home
-          </NavLink>
-          <NavLink
-            to="/venues"
-            className={({ isActive }) => (isActive ? active : base)}
-          >
-            Venues
-          </NavLink>
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => (isActive ? active : base)}
-          >
-            Dashboard
-          </NavLink>
-          <NavLink
-            to="/profile"
-            className={({ isActive }) => (isActive ? active : base)}
-          >
-            Profile
-          </NavLink>
-          <NavLink
-            to="/manage/venues"
-            className={({ isActive }) => (isActive ? active : base)}
-          >
-            Manage
-          </NavLink>
+          <div className="flex items-center gap-2">
+            {!loggedIn ? (
+              <>
+                <Link to="/login" className="btn">Login</Link>
+                <Link to="/register" className="btn-secondary">Sign up</Link>
+              </>
+            ) : (
+              <>
+                <span className="hidden sm:block text-gray-200 text-sm">Hi, {userName}</span>
+                <button className="btn-danger" onClick={logout}>Logout</button>
+              </>
+            )}
+          </div>
         </div>
-
-        <div className="flex gap-2">
-          <Link to="/login" className="text-sm text-gray-700 hover:text-gray-900">
-            Login
-          </Link>
-          <Link
-            to="/register"
-            className="text-sm bg-gray-900 text-white rounded-xl px-3 py-1 hover:opacity-90"
-          >
-            Sign up
-          </Link>
-        </div>
-      </nav>
+      </div>
     </header>
   );
 }
