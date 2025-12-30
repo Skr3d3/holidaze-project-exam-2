@@ -18,6 +18,13 @@ export type Venue = {
   created: string; updated: string;
   meta: MetaFacilities; location: GeoLocation;
 };
+export type CreateVenue = {
+  id: string;
+  name: string;
+  price?: number;
+  media?: { url: string; alt?: string }[];
+  location?: { city?: string; country?: string };
+};
 export type VenueOwner = { name: string; email: string; bio?: string; avatar?: ImageRef; banner?: ImageRef };
 export type VenueBookingLite = { id: string; dateFrom: string; dateTo: string; guests: number; created: string; updated: string };
 export type VenueWithOwner    = Venue & { owner: VenueOwner };

@@ -1,4 +1,3 @@
-// src/components/Layout/Navbar.tsx
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getUser, clearAuth } from "../../lib/auth";

@@ -43,7 +43,7 @@ export default function Home() {
         <div className="mt-6 flex items-center justify-center gap-3">
           <Link to="/venues" className="btn">Browse venues</Link>
           {!user && <Link to="/register" className="btn-secondary">Create account</Link>}
-          {user?.venueManager && <Link to="/manage/venues" className="btn-secondary">Manage venues</Link>}
+          {user?.venueManager && <Link to="/managevenues" className="btn-secondary">Manage venues</Link>}
         </div>
       </section>
 

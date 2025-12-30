@@ -33,7 +33,7 @@ export function AppRouter() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
 
-            <Route path="/manage/venues" element={<ManageVenues />} />
+            <Route path="/managevenues" element={<ManageVenues />} />
             <Route path="/manage/venues/new" element={<VenueCreate />} />
             <Route path="/manage/venues/:id/edit" element={<VenueEdit />} />
             <Route path="/manage/venues/:id/bookings" element={<VenueBookings />} />
