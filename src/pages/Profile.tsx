@@ -1,17 +1,70 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  ReactNode,
+} from "react";
 import { api } from "../lib/api";
 import { getUser, getToken } from "../lib/auth";
+import { useNavigate } from "react-router-dom";
 
 type P = {
   name: string;
   email: string;
   venueManager?: boolean;
-  avatar?: { url: string};
+  avatar?: { url: string };
   venues?: any[];
   bookings?: any[];
 };
 
+type CollapsibleSectionProps = {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+  className?: string;
+};
+
+function CollapsibleSection({
+  title,
+  children,
+  defaultOpen = true,
+  className,
+}: CollapsibleSectionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setIsOpen(!isOpen);
+    }
+  };
+
+  return (
+    <section className={className}>
+      <div
+        className="flex items-center justify-between cursor-pointer select-none"
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-expanded={isOpen}
+      >
+        <h2 className="text-lg font-semibold">{title}</h2>
+        <div
+          className={`flex-shrink-0 w-2.5 h-2.5 border-gray-600 border-r-2 border-b-2 transform transition-transform ${
+            isOpen ? "rotate-45" : "-rotate-45"
+          }`}
+        ></div>
+      </div>
+      {isOpen && <div className="mt-3">{children}</div>}
+    </section>
+  );
+}
+
 export default function Profile() {
+  const navigate = useNavigate();
   const meName = useMemo(() => getUser<{ name: string }>()?.name ?? null, []);
   const token = useMemo(() => getToken() ?? null, []);
 
@@ -35,15 +88,22 @@ export default function Profile() {
     setErr(null);
     try {
       const res = await api<{ data: P }>(
-        `/profiles/${encodeURIComponent(meName)}?_venues=true&_bookings=true&_=${Date.now()}`,
-        { headers: token ? { Authorization: `Bearer ${token}` } : {}, signal: ctrl.signal, cache: "no-store" }
+        `/profiles/${encodeURIComponent(
+          meName
+        )}?_venues=true&_bookings=true&_=${Date.now()}`,
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          signal: ctrl.signal,
+          cache: "no-store",
+        }
       );
       if (myReq !== reqIdRef.current) return;
       const p = (res as any).data ?? (res as any);
       setProfile(p);
       setAvatarUrl(p?.avatar?.url || "");
     } catch (e: any) {
-      if (e?.name === "AbortError" || /aborted/i.test(String(e?.message))) return;
+      if (e?.name === "AbortError" || /aborted/i.test(String(e?.message)))
+        return;
       setErr(e.message || "Failed to load profile");
     } finally {
       if (myReq === reqIdRef.current) setLoading(false);
@@ -87,7 +147,9 @@ export default function Profile() {
     loadCtrlRef.current?.abort();
     const prev = profile;
     setProfile((p) =>
-      p ? { ...p, bookings: (p.bookings || []).filter((b: any) => b.id !== id) } : p
+      p
+        ? { ...p, bookings: (p.bookings || []).filter((b: any) => b.id !== id) }
+        : p
     );
     try {
       await api(`/bookings/${id}`, {
@@ -103,9 +165,15 @@ export default function Profile() {
 
   async function onEditBooking(b: any) {
     if (!token) return;
-    const df = window.prompt("New start date (YYYY-MM-DD):", String(b.dateFrom).slice(0, 10));
+    const df = window.prompt(
+      "New start date (YYYY-MM-DD):",
+      String(b.dateFrom).slice(0, 10)
+    );
     if (!df) return;
-    const dt = window.prompt("New end date (YYYY-MM-DD):", String(b.dateTo).slice(0, 10));
+    const dt = window.prompt(
+      "New end date (YYYY-MM-DD):",
+      String(b.dateTo).slice(0, 10)
+    );
     if (!dt) return;
     const gStr = window.prompt("Guests:", String(b.guests));
     const g = Number(gStr ?? b.guests);
@@ -135,6 +203,30 @@ export default function Profile() {
     }
   }
 
+  function onEditVenue(v: any) {
+    navigate(`/venues/${v.id}/edit`);
+  }
+
+  async function onDeleteVenue(id: string) {
+    if (!token) return;
+    if (!window.confirm("Delete this venue? This action cannot be undone and will cancel all bookings for this venue.")) return;
+    loadCtrlRef.current?.abort();
+    const prev = profile;
+    setProfile((p) =>
+      p ? { ...p, venues: (p.venues || []).filter((v: any) => v.id !== id) } : p
+    );
+    try {
+      await api(`/venues/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await load();
+    } catch (e: any) {
+      setProfile(prev || null);
+      window.alert(e.message || "Delete failed");
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
       <section className="flex items-start gap-6">
@@ -143,6 +235,7 @@ export default function Profile() {
             <img
               src={profile.avatar.url}
               className="w-full h-full object-cover"
+              alt="User avatar"
             />
           ) : (
             <div className="w-full h-full grid place-items-center text-sm text-gray-500">
@@ -161,8 +254,11 @@ export default function Profile() {
         </div>
       </section>
 
-      <section className="card max-w-xl">
-        <h2 className="text-lg font-semibold mb-3">Update avatar</h2>
+      <CollapsibleSection
+        title="Update avatar"
+        defaultOpen={false}
+        className="card max-w-xl"
+      >
         <form onSubmit={onSaveAvatar} className="space-y-3">
           <input
             className="input w-full"
@@ -175,64 +271,101 @@ export default function Profile() {
             {saving ? "Saving…" : "Save avatar"}
           </button>
         </form>
-      </section>
+      </CollapsibleSection>
 
-      <section>
-        <h2 className="text-lg font-semibold mb-3">My upcoming bookings</h2>
+      <CollapsibleSection title="My upcoming bookings">
         {loading && <div>Loading…</div>}
         {!loading && bookings.length === 0 && (
           <div className="text-sm text-gray-600">No bookings.</div>
         )}
         <div className="grid gap-3">
           {bookings.map((b: any) => (
-            <div key={b.id} className="card flex items-center justify-between gap-3">
+            <div
+              key={b.id}
+              className="card flex items-center justify-between gap-3"
+            >
               <div>
                 <div className="font-medium">
-                  {b?.venue?.name || "Venue"} — {String(b.dateFrom).slice(0, 10)} →{" "}
+                  {b?.venue?.name || "Venue"} —{" "}
+                  {String(b.dateFrom).slice(0, 10)} →{" "}
                   {String(b.dateTo).slice(0, 10)}
                 </div>
                 <div className="text-sm text-gray-600">Guests: {b.guests}</div>
               </div>
               <div className="flex gap-2">
-                <button className="btn-secondary" onClick={() => onEditBooking(b)}>
+                <button
+                  className="btn-secondary"
+                  onClick={() => onEditBooking(b)}
+                >
                   Edit
                 </button>
-                <button className="btn-danger" onClick={() => onDeleteBooking(b.id)}>
+                <button
+                  className="btn-danger"
+                  onClick={() => onDeleteBooking(b.id)}
+                >
                   Delete
                 </button>
               </div>
             </div>
           ))}
         </div>
-      </section>
+      </CollapsibleSection>
 
       {profile?.venueManager ? (
-        <section>
-          <h2 className="text-lg font-semibold mb-3">My venues</h2>
+        <CollapsibleSection title="My venues">
           {!loading && venues.length === 0 && (
             <div className="text-sm text-gray-600">No venues yet.</div>
           )}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {venues.map((v: any) => (
-              <a key={v.id} href={`/venues/${v.id}`} className="card hover:shadow-md transition">
-                <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 mb-3">
-                  {v.media?.[0]?.url ? (
-                    <img
-                      src={v.media[0].url}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : null}
-                </div>
-                <div className="font-medium">{v.name}</div>
-                {(v.location?.city || v.location?.country) && (
-                  <div className="text-xs text-gray-500">
-                    {[v.location?.city, v.location?.country].filter(Boolean).join(", ")}
+              <div
+                key={v.id}
+                className="card hover:shadow-md transition flex flex-col"
+              >
+                <a
+                  href={`/my-venues/${v.id}`}
+                  className="flex-grow"
+                >
+                  <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 mb-3">
+                    {v.media?.[0]?.url ? (
+                      <img
+                        src={v.media[0].url}
+                        className="w-full h-full object-cover"
+                        alt={v.name}
+                      />
+                    ) : (
+                      <div className="w-full h-full grid place-items-center text-sm text-gray-500">
+                        No image
+                      </div>
+                    )}
                   </div>
-                )}
-              </a>
+                  <div className="font-medium">{v.name}</div>
+                  {(v.location?.city || v.location?.country) && (
+                    <div className="text-xs text-gray-500">
+                      {[v.location?.city, v.location?.country]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </div>
+                  )}
+                </a>
+                <div className="flex gap-2 mt-4">
+                  <button
+                    className="btn-secondary w-full"
+                    onClick={() => onEditVenue(v)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn-danger w-full"
+                    onClick={() => onDeleteVenue(v.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
-        </section>
+        </CollapsibleSection>
       ) : null}
     </div>
   );

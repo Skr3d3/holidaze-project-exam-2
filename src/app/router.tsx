@@ -12,7 +12,7 @@ import Dashboard from "../pages/Dashboard";
 import Profile from "../pages/Profile";
 import ManageVenues from "../pages/ManageVenues";
 import VenueCreate from "../pages/VenueCreate";
-import VenueEdit from "../pages/VenueEdit";
+import MyVenueDetail from "../pages/MyVenueDetail";
 import VenueBookings from "../pages/VenueBookings";
 import NotFound from "../pages/NotFound";
 
@@ -35,7 +35,7 @@ export function AppRouter() {
 
             <Route path="/managevenues" element={<ManageVenues />} />
             <Route path="/manage/venues/new" element={<VenueCreate />} />
-            <Route path="/manage/venues/:id/edit" element={<VenueEdit />} />
+            <Route path="/my-venues/:id" element={<MyVenueDetail />} />
             <Route path="/manage/venues/:id/bookings" element={<VenueBookings />} />
 
             <Route path="*" element={<NotFound />} />

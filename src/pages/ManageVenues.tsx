@@ -146,7 +146,7 @@ export default function ManageVenues() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((v) => (
           <div key={v.id} className="card">
-            <Link to={`/venues/${v.id}`} className="block">
+            <Link to={`/my-venues/${v.id}`} className="block">
               <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 mb-3">
                 {v.media?.[0]?.url && (
                   <img
