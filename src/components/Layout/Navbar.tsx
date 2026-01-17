@@ -46,7 +46,7 @@ export default function Navbar() {
             <nav className="hidden md:flex items-center gap-1">
               <NavLink to="/venues" className={linkCls}>Venues</NavLink>
               {loggedIn && <NavLink to="/profile" className={linkCls}>Profile</NavLink>}
-              {user?.venueManager && <NavLink to="/manage/venues" className={linkCls}>Manage</NavLink>}
+              {user?.venueManager && <NavLink to="/managevenues" className={linkCls}>Manage</NavLink>}
             </nav>
           </div>
 
@@ -85,7 +85,7 @@ export default function Navbar() {
           <nav className="px-2 pt-2 pb-3 space-y-1">
             <NavLink to="/venues" className={linkCls}>Venues</NavLink>
             {loggedIn && <NavLink to="/profile" className={linkCls}>Profile</NavLink>}
-            {user?.venueManager && <NavLink to="/manage/venues" className={linkCls}>Manage</NavLink>}
+            {user?.venueManager && <NavLink to="/managevenues" className={linkCls}>Manage</NavLink>}
 
             {!loggedIn ? (
               <div className="mt-2 flex flex-col gap-2">
