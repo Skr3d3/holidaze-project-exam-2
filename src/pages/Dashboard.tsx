@@ -118,12 +118,12 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold mb-4">My bookings</h1>
+    <div className="page">
+      <h1 className="page-heading">My bookings</h1>
       {loading && <div>Loading…</div>}
       {err && <div className="text-red-600">{err}</div>}
       {!loading && !err && items.length === 0 && (
-        <div className="text-sm text-gray-600">No upcoming bookings.</div>
+        <div className="text-sm text-gray-500">No upcoming bookings.</div>
       )}
       <div className="grid gap-3">
         {items.map(b => {
@@ -137,7 +137,7 @@ export default function Dashboard() {
                 <div className="font-medium">
                   {vName} — {b.dateFrom.slice(0, 10)} → {b.dateTo.slice(0, 10)}
                 </div>
-                <div className="text-sm text-gray-600">Guests: {b.guests}</div>
+                <div className="text-sm text-gray-500">Guests: {b.guests}</div>
               </div>
               <div className="flex gap-2">
                 <button className="btn-secondary" onClick={() => onEdit(b)}>Edit</button>

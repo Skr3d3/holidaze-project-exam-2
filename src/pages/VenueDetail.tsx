@@ -84,15 +84,15 @@ export default function VenueDetail() {
       <section className="md:col-span-2">
         <div className="grid grid-cols-2 gap-3 mb-4">
           {venue.media?.slice(0, 4).map((m, i) => (
-            <div key={i} className="aspect-video rounded-xl overflow-hidden bg-gray-100">
+            <div key={i} className="aspect-video rounded-lg overflow-hidden bg-gray-100">
               <img src={m.url} alt={m.alt || `${venue.name} ${i+1}`}
                    className="w-full h-full object-cover" />
             </div>
           ))}
         </div>
-        <h1 className="text-2xl font-semibold mb-2">{venue.name}</h1>
+        <h1 className="page-heading">{venue.name}</h1>
         {venue.location?.city || venue.location?.country ? (
-          <div className="text-sm text-gray-600 mb-3">
+          <div className="text-sm text-gray-500 mb-3">
             {[venue.location?.city, venue.location?.country].filter(Boolean).join(", ")}
           </div>
         ) : null}
@@ -103,7 +103,7 @@ export default function VenueDetail() {
         <div className="text-xl font-semibold mb-2">
           {typeof venue.price === "number" ? `€${venue.price}` : "Price on request"}
         </div>
-        <div className="text-sm text-gray-600 mb-4">
+        <div className="text-sm text-gray-500 mb-4">
           Max guests: {venue.maxGuests ?? "—"}
         </div>
 

@@ -244,8 +244,8 @@ export default function Profile() {
           )}
         </div>
         <div className="flex-1">
-          <h1 className="text-2xl font-semibold">{profile?.name || meName}</h1>
-          <div className="text-sm text-gray-600">{profile?.email}</div>
+          <h1 className="page-heading">{profile?.name || meName}</h1>
+          <div className="text-sm text-gray-500">{profile?.email}</div>
           {profile?.venueManager ? (
             <div className="mt-1 inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
               Venue manager
@@ -276,7 +276,7 @@ export default function Profile() {
       <CollapsibleSection title="My upcoming bookings">
         {loading && <div>Loading…</div>}
         {!loading && bookings.length === 0 && (
-          <div className="text-sm text-gray-600">No bookings.</div>
+          <div className="text-sm text-gray-500">No bookings.</div>
         )}
         <div className="grid gap-3">
           {bookings.map((b: any) => (
@@ -290,7 +290,7 @@ export default function Profile() {
                   {String(b.dateFrom).slice(0, 10)} →{" "}
                   {String(b.dateTo).slice(0, 10)}
                 </div>
-                <div className="text-sm text-gray-600">Guests: {b.guests}</div>
+                <div className="text-sm text-gray-500">Guests: {b.guests}</div>
               </div>
               <div className="flex gap-2">
                 <button
@@ -314,7 +314,7 @@ export default function Profile() {
       {profile?.venueManager ? (
         <CollapsibleSection title="My venues">
           {!loading && venues.length === 0 && (
-            <div className="text-sm text-gray-600">No venues yet.</div>
+            <div className="text-sm text-gray-500">No venues yet.</div>
           )}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {venues.map((v: any) => (
@@ -326,7 +326,7 @@ export default function Profile() {
                   href={`/my-venues/${v.id}`}
                   className="flex-grow"
                 >
-                  <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 mb-3">
+                  <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 mb-3">
                     {v.media?.[0]?.url ? (
                       <img
                         src={v.media[0].url}

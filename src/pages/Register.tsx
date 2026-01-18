@@ -58,7 +58,7 @@ export default function Register() {
 
   return (
     <div className="max-w-md mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold mb-4">Register</h1>
+      <h1 className="page-heading">Register</h1>
       <form onSubmit={onSubmit} className="space-y-3">
         <input
           className="input"
@@ -83,7 +83,7 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm text-[color:var(--color-text)]">
           <input
             type="checkbox"
             checked={venueManager}

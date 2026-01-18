@@ -72,7 +72,7 @@ export default function MyVenueDetailPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
       <section>
-        <h1 className="text-3xl font-bold mb-4">{venue.name}</h1>
+        <h1 className="text-3xl font-semibold mb-4 text-[color:var(--color-text)]">{venue.name}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             {venue.media?.[0]?.url ? (
@@ -88,7 +88,7 @@ export default function MyVenueDetailPage() {
             )}
           </div>
           <div>
-            <h2 className="text-2xl font-semibold mb-2">Details</h2>
+            <h2 className="page-heading">Details</h2>
             {venue.description && <p className="text-gray-700 mb-4">{venue.description}</p>}
             {typeof venue.price === "number" && (
               <p><strong>Price per night:</strong> €{venue.price}</p>
@@ -102,35 +102,41 @@ export default function MyVenueDetailPage() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold mb-4">Bookings</h2>
+        <h2 className="page-heading">Bookings</h2>
         <div className="space-y-4">
           {bookings.length > 0 ? (
             bookings.map((booking) => (
-              <div key={booking.id} className="p-4 border rounded-lg shadow-sm">
-                <div className="flex items-center gap-4">
-                  {booking.customer?.avatar?.url && (
+              <div key={booking.id} className="card flex items-start sm:items-center gap-4">
+                <div className="shrink-0">
+                  {booking.customer?.avatar?.url ? (
                     <img
                       src={booking.customer.avatar.url}
                       alt={booking.customer?.name || "Customer"}
-                      className="w-12 h-12 rounded-full"
+                      className="w-12 h-12 rounded-full object-cover"
                     />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gray-200" />
                   )}
-                  <div>
-                    <p className="font-semibold">{booking.customer?.name || "Customer"}</p>
-                    {booking.customer?.email && (
-                      <p className="text-sm text-gray-600">{booking.customer.email}</p>
-                    )}
-                  </div>
                 </div>
-                <div className="mt-4">
-                  <p><strong>From:</strong> {new Date(booking.dateFrom).toLocaleDateString()}</p>
-                  <p><strong>To:</strong> {new Date(booking.dateTo).toLocaleDateString()}</p>
-                  <p><strong>Guests:</strong> {booking.guests}</p>
+                <div className="flex-grow">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                     <div>
+                        <p className="font-semibold">{booking.customer?.name || "Customer"}</p>
+                        {booking.customer?.email && (
+                          <p className="text-sm text-gray-500">{booking.customer.email}</p>
+                        )}
+                     </div>
+                     <div className="text-sm mt-2 sm:mt-0 text-gray-700">
+                        <p><strong>From:</strong> {new Date(booking.dateFrom).toLocaleDateString()}</p>
+                        <p><strong>To:</strong> {new Date(booking.dateTo).toLocaleDateString()}</p>
+                     </div>
+                  </div>
+                  <p className="text-sm mt-1 text-gray-700"><strong>Guests:</strong> {booking.guests}</p>
                 </div>
               </div>
             ))
           ) : (
-            <p>No bookings for this venue yet.</p>
+            <p className="text-gray-500">No bookings for this venue yet.</p>
           )}
         </div>
       </section>

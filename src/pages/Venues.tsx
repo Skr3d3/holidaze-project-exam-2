@@ -53,7 +53,7 @@ export default function Venues() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold mb-4">Venues</h1>
+      <h1 className="page-heading">Venues</h1>
 
       <div className="mb-6">
         <input
@@ -64,7 +64,7 @@ export default function Venues() {
         />
       </div>
 
-      {loading && <div className="text-sm text-gray-600">Loading…</div>}
+      {loading && <div className="text-sm text-gray-500">Loading…</div>}
       {err && <div className="text-sm text-red-600">{err}</div>}
       {!loading && !err && list.length === 0 && (
         <div className="text-sm text-gray-500">No venues found.</div>
@@ -73,7 +73,7 @@ export default function Venues() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {list.map(v => (
           <a key={v.id} href={`/venues/${v.id}`} className="card hover:shadow-md transition">
-            <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 mb-3">
+            <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 mb-3">
               {v.media?.[0]?.url && (
                 <img src={v.media[0].url} alt={v.media[0].alt || v.name}
                      className="w-full h-full object-cover" loading="lazy"/>
@@ -86,7 +86,7 @@ export default function Venues() {
               </div>
             ) : null}
             {typeof v.price === "number" && (
-              <div className="mt-2 text-sm text-gray-800">€{v.price}</div>
+              <div className="mt-2 text-sm text-gray-700">€{v.price}</div>
             )}
           </a>
         ))}

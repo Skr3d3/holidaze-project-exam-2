@@ -136,18 +136,18 @@ export default function ManageVenues() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 space-y-8">
       <section className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Manage venues</h1>
+        <h1 className="page-heading">Manage venues</h1>
         <button className="btn" onClick={onCreate}>Create venue</button>
       </section>
 
-      {loading && <div className="text-sm text-gray-600">Loading…</div>}
+      {loading && <div className="text-sm text-gray-500">Loading…</div>}
       {err && <div className="text-sm text-red-600">{err}</div>}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((v) => (
           <div key={v.id} className="card">
             <Link to={`/my-venues/${v.id}`} className="block">
-              <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 mb-3">
+              <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 mb-3">
                 {v.media?.[0]?.url && (
                   <img
                     src={v.media[0].url}
@@ -164,7 +164,7 @@ export default function ManageVenues() {
                 </div>
               ) : null}
               {typeof v.price === "number" && (
-                <div className="mt-2 text-sm text-gray-800">€{v.price}</div>
+                <div className="mt-2 text-sm text-gray-700">€{v.price}</div>
               )}
             </Link>
             <div className="mt-3 flex gap-2">
