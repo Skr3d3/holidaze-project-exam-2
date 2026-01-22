@@ -26,8 +26,7 @@ export function apiAuth<T>(path: string, init?: RequestInit) {
 
 export function api<T>(path: string, init: RequestInit = {}) {
   const key =
-    (localStorage.getItem("holidaze_api_key") || "").trim() ||
-    (process.env.REACT_APP_API_KEY || process.env.REACT_APP_NOROFF_API_KEY || "").trim();
+    (localStorage.getItem("holidaze_api_key") || "").trim() || (ENV_KEY).trim();
 
   return doFetch<T>(
     `${BASE_HOLI}${path}`,
