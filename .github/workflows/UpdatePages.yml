@@ -30,6 +30,8 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          PUBLIC_URL: /holidaze-project-exam-2
 
       - name: Disable Jekyll and add fallback
         run:  cp build/index.html build/404.html && touch build/.nojekyll
