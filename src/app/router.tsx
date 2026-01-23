@@ -17,8 +17,9 @@ import VenueBookings from "../pages/VenueBookings";
 import NotFound from "../pages/NotFound";
 
 export function AppRouter() {
+  const basename = process.env.BASE_URL ? process.env.BASE_URL : "/";
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Navbar />
 
