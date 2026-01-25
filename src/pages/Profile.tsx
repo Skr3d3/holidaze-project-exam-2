@@ -160,45 +160,9 @@ export default function Profile() {
     }
   }
 
-  async function onEditBooking(b: any) {
-    if (!token) return;
-    const df = window.prompt(
-      "New start date (YYYY-MM-DD):",
-      String(b.dateFrom).slice(0, 10)
-    );
-    if (!df) return;
-    const dt = window.prompt(
-      "New end date (YYYY-MM-DD):",
-      String(b.dateTo).slice(0, 10)
-    );
-    if (!dt) return;
-    const gStr = window.prompt("Guests:", String(b.guests));
-    const g = Number(gStr ?? b.guests);
-    if (!Number.isFinite(g) || g < 1) return window.alert("Invalid guests");
-    loadCtrlRef.current?.abort();
-    const prev = profile;
-    setProfile((p) =>
-      p
-        ? {
-            ...p,
-            bookings: (p.bookings || []).map((x: any) =>
-              x.id === b.id ? { ...x, dateFrom: df, dateTo: dt, guests: g } : x
-            ),
-          }
-        : p
-    );
-    try {
-      await api(`/bookings/${b.id}`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ dateFrom: df, dateTo: dt, guests: g }),
-      });
-      await load();
-    } catch (e: any) {
-      setProfile(prev || null);
-      window.alert(e.message || "Update failed");
-    }
-  }
+  function onEditBooking(b: any) {
+  navigate(`/bookings/${b.id}/edit`);
+}
 
   function onEditVenue(v: any) {
     navigate(`/manage/venues/${v.id}/edit`);

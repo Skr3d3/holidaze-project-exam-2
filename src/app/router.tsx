@@ -11,7 +11,7 @@ import Profile from "../pages/Profile";
 import ManageVenues from "../pages/ManageVenues";
 import VenueUpsert from "../pages/VenueUpsert";
 import MyVenueDetail from "../pages/MyVenueDetail";
-import VenueBookings from "../pages/VenueBookings";
+import BookingEdit from "../pages/BookingEdit";
 import NotFound from "../pages/NotFound";
 import RequireManager from "../components/RequireManager";
 
@@ -34,6 +34,7 @@ export function AppRouter() {
             <Route path="/" element={<Home />} />
             <Route path="/venues" element={<Venues />} />
             <Route path="/venues/:id" element={<VenueDetail />} />
+            <Route path="/bookings/:id/edit" element={<BookingEdit />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
@@ -58,7 +59,6 @@ export function AppRouter() {
             />
 
             <Route path="/my-venues/:id" element={<MyVenueDetail />} />
-            <Route path="/manage/venues/:id/bookings" element={<VenueBookings />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
