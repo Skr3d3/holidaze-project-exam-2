@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../lib/api";
 import { unwrap, type Venue } from "../types/holidaze";
+import { Link } from "react-router-dom";
 
 const normalize = (s: string) => s.toLowerCase();
 
@@ -72,7 +73,7 @@ export default function Venues() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {list.map(v => (
-          <a key={v.id} href={`/venues/${v.id}`} className="card hover:shadow-md transition">
+          <Link key={v.id} to={`/venues/${v.id}`} className="card hover:shadow-lg transition group">
             <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 mb-3">
               {v.media?.[0]?.url && (
                 <img src={v.media[0].url} alt={v.media[0].alt || v.name}
@@ -88,7 +89,7 @@ export default function Venues() {
             {typeof v.price === "number" && (
               <div className="mt-2 text-sm text-gray-700">€{v.price}</div>
             )}
-          </a>
+          </Link>
         ))}
       </div>
     </div>

@@ -7,7 +7,6 @@ import Venues from "../pages/Venues";
 import VenueDetail from "../pages/VenueDetail";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Dashboard from "../pages/Dashboard";
 import Profile from "../pages/Profile";
 import ManageVenues from "../pages/ManageVenues";
 import VenueUpsert from "../pages/VenueUpsert";
@@ -38,7 +37,6 @@ export function AppRouter() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/managevenues" element={<ManageVenues />} />
