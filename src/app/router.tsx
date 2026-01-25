@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Navbar from "../components/Layout/Navbar";
 import Footer from "../components/Layout/Footer";
 
@@ -11,18 +10,26 @@ import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import Profile from "../pages/Profile";
 import ManageVenues from "../pages/ManageVenues";
-import VenueCreate from "../pages/VenueCreate";
+import VenueUpsert from "../pages/VenueUpsert";
 import MyVenueDetail from "../pages/MyVenueDetail";
 import VenueBookings from "../pages/VenueBookings";
 import NotFound from "../pages/NotFound";
+import RequireManager from "../components/RequireManager";
+
+function normalizeBasename(raw?: string) {
+  const s = (raw || "").trim();
+  const path = s.replace(/^https?:\/\/[^/]+/i, "");
+  return path ? (path.startsWith("/") ? path : `/${path}`) : "/";
+}
 
 export function AppRouter() {
-  const basename = process.env.BASE_URL ? process.env.BASE_URL : "/";
+  const isProd = process.env.NODE_ENV === "production";
+  const basename = isProd ? normalizeBasename(process.env.PUBLIC_URL) : "/";
+
   return (
     <BrowserRouter basename={basename}>
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Navbar />
-
         <div className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -35,14 +42,29 @@ export function AppRouter() {
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/managevenues" element={<ManageVenues />} />
-            <Route path="/manage/venues/new" element={<VenueCreate />} />
+            <Route
+              path="/manage/venues/new"
+              element={
+                <RequireManager>
+                  <VenueUpsert />
+                </RequireManager>
+              }
+            />
+            <Route
+              path="/manage/venues/:id/edit"
+              element={
+                <RequireManager>
+                  <VenueUpsert />
+                </RequireManager>
+              }
+            />
+
             <Route path="/my-venues/:id" element={<MyVenueDetail />} />
             <Route path="/manage/venues/:id/bookings" element={<VenueBookings />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-
         <Footer />
       </div>
     </BrowserRouter>

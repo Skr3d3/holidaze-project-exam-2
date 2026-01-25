@@ -46,42 +46,6 @@ export default function ManageVenues() {
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-  async function onCreate() {
-    const name = window.prompt("Venue name:");
-    if (!name) return;
-    const priceStr = window.prompt("Price (number):", "100");
-    const price = Number(priceStr ?? 100);
-    if (!Number.isFinite(price) || price < 0) return window.alert("Invalid price");
-    const city = window.prompt("City (optional):") || undefined;
-    const country = window.prompt("Country (optional):") || undefined;
-    const img = window.prompt("Image URL (optional):") || "";
-    const media = img ? [{ url: img, alt: name }] : [];
-    loadCtrlRef.current?.abort();
-    const prev = items;
-    const tmpId = `tmp-${Date.now()}`;
-    setItems([{ id: tmpId, name, price, media, location: { city, country } }, ...items]);
-    try {
-      await api(`/venues`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          name,
-          description: "",
-          price,
-          maxGuests: 2,
-          media,
-          location: { city, country },
-          meta: { wifi: false, parking: false, breakfast: false, pets: false },
-        }),
-      });
-      await sleep(250);
-      await load();
-    } catch (e: any) {
-      setItems(prev);
-      window.alert(e.message || "Create failed");
-    }
-  }
-
   async function onEdit(v: CreateVenue) {
     const name = window.prompt("Venue name:", v.name) || v.name;
     const priceStr = window.prompt("Price (number):", String(v.price ?? 0));
@@ -104,8 +68,7 @@ export default function ManageVenues() {
           name,
           price,
           media,
-          location: { city, country },
-        }),
+          location: { city, country } }),
       });
       await sleep(250);
       await load();
@@ -116,7 +79,7 @@ export default function ManageVenues() {
   }
 
   async function onDelete(id: string) {
-    if (!window.confirm("Delete this venue?")) return;
+    if (!window.confirm("Delete this venue? This action cannot be undone and will cancel all bookings for this venue.")) return;
     loadCtrlRef.current?.abort();
     const prev = items;
     setItems((xs) => xs.filter((x) => x.id !== id));
@@ -137,7 +100,7 @@ export default function ManageVenues() {
     <div className="max-w-7xl mx-auto px-4 py-10 space-y-8">
       <section className="flex items-center justify-between">
         <h1 className="page-heading">Manage venues</h1>
-        <button className="btn" onClick={onCreate}>Create venue</button>
+        <Link to="/manage/venues/new" className="btn">Create venue</Link>
       </section>
 
       {loading && <div className="text-sm text-gray-500">Loading…</div>}
@@ -168,7 +131,7 @@ export default function ManageVenues() {
               )}
             </Link>
             <div className="mt-3 flex gap-2">
-              <button className="btn-secondary" onClick={() => onEdit(v)}>Edit</button>
+              <Link to={`/manage/venues/${v.id}/edit`} className="btn-secondary">Edit</Link>
               <button className="btn-danger" onClick={() => onDelete(v.id)}>Delete</button>
             </div>
           </div>

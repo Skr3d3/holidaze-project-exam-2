@@ -6,9 +6,9 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { getUser, getToken } from "../lib/auth";
-import { useNavigate } from "react-router-dom";
 
 type P = {
   name: string;
@@ -33,14 +33,12 @@ function CollapsibleSection({
   className,
 }: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
-
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       setIsOpen(!isOpen);
     }
   };
-
   return (
     <section className={className}>
       <div
@@ -56,7 +54,7 @@ function CollapsibleSection({
           className={`flex-shrink-0 w-2.5 h-2.5 border-gray-600 border-r-2 border-b-2 transform transition-transform ${
             isOpen ? "rotate-45" : "-rotate-45"
           }`}
-        ></div>
+        />
       </div>
       {isOpen && <div className="mt-3">{children}</div>}
     </section>
@@ -102,8 +100,7 @@ export default function Profile() {
       setProfile(p);
       setAvatarUrl(p?.avatar?.url || "");
     } catch (e: any) {
-      if (e?.name === "AbortError" || /aborted/i.test(String(e?.message)))
-        return;
+      if (e?.name === "AbortError" || /aborted/i.test(String(e?.message))) return;
       setErr(e.message || "Failed to load profile");
     } finally {
       if (myReq === reqIdRef.current) setLoading(false);
@@ -204,7 +201,7 @@ export default function Profile() {
   }
 
   function onEditVenue(v: any) {
-    navigate(`/venues/${v.id}/edit`);
+    navigate(`/manage/venues/${v.id}/edit`);
   }
 
   async function onDeleteVenue(id: string) {
@@ -280,31 +277,16 @@ export default function Profile() {
         )}
         <div className="grid gap-3">
           {bookings.map((b: any) => (
-            <div
-              key={b.id}
-              className="card flex items-center justify-between gap-3"
-            >
+            <div key={b.id} className="card flex items-center justify-between gap-3">
               <div>
                 <div className="font-medium">
-                  {b?.venue?.name || "Venue"} —{" "}
-                  {String(b.dateFrom).slice(0, 10)} →{" "}
-                  {String(b.dateTo).slice(0, 10)}
+                  {b?.venue?.name || "Venue"} — {String(b.dateFrom).slice(0, 10)} → {String(b.dateTo).slice(0, 10)}
                 </div>
                 <div className="text-sm text-gray-500">Guests: {b.guests}</div>
               </div>
               <div className="flex gap-2">
-                <button
-                  className="btn-secondary"
-                  onClick={() => onEditBooking(b)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn-danger"
-                  onClick={() => onDeleteBooking(b.id)}
-                >
-                  Delete
-                </button>
+                <button className="btn-secondary" onClick={() => onEditBooking(b)}>Edit</button>
+                <button className="btn-danger" onClick={() => onDeleteBooking(b.id)}>Delete</button>
               </div>
             </div>
           ))}
@@ -318,21 +300,11 @@ export default function Profile() {
           )}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {venues.map((v: any) => (
-              <div
-                key={v.id}
-                className="card hover:shadow-md transition flex flex-col"
-              >
-                <a
-                  href={`/my-venues/${v.id}`}
-                  className="flex-grow"
-                >
+              <div key={v.id} className="card hover:shadow-md transition flex flex-col">
+                <Link to={`/my-venues/${v.id}`} className="flex-grow block">
                   <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 mb-3">
                     {v.media?.[0]?.url ? (
-                      <img
-                        src={v.media[0].url}
-                        className="w-full h-full object-cover"
-                        alt={v.name}
-                      />
+                      <img src={v.media[0].url} className="w-full h-full object-cover" alt={v.name} />
                     ) : (
                       <div className="w-full h-full grid place-items-center text-sm text-gray-500">
                         No image
@@ -342,25 +314,13 @@ export default function Profile() {
                   <div className="font-medium">{v.name}</div>
                   {(v.location?.city || v.location?.country) && (
                     <div className="text-xs text-gray-500">
-                      {[v.location?.city, v.location?.country]
-                        .filter(Boolean)
-                        .join(", ")}
+                      {[v.location?.city, v.location?.country].filter(Boolean).join(", ")}
                     </div>
                   )}
-                </a>
+                </Link>
                 <div className="flex gap-2 mt-4">
-                  <button
-                    className="btn-secondary w-full"
-                    onClick={() => onEditVenue(v)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn-danger w-full"
-                    onClick={() => onDeleteVenue(v.id)}
-                  >
-                    Delete
-                  </button>
+                  <button className="btn-secondary w-full" onClick={() => onEditVenue(v)}>Edit</button>
+                  <button className="btn-danger w-full" onClick={() => onDeleteVenue(v.id)}>Delete</button>
                 </div>
               </div>
             ))}
