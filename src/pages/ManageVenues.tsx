@@ -46,38 +46,6 @@ export default function ManageVenues() {
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-  async function onEdit(v: CreateVenue) {
-    const name = window.prompt("Venue name:", v.name) || v.name;
-    const priceStr = window.prompt("Price (number):", String(v.price ?? 0));
-    const price = Number(priceStr ?? v.price ?? 0);
-    if (!Number.isFinite(price) || price < 0) return window.alert("Invalid price");
-    const city = window.prompt("City (optional):", v.location?.city || "") || undefined;
-    const country = window.prompt("Country (optional):", v.location?.country || "") || undefined;
-    const currentImg = v.media?.[0]?.url || "";
-    const img = window.prompt("Image URL (optional):", currentImg) || "";
-    const media = img ? [{ url: img, alt: name }] : [];
-    loadCtrlRef.current?.abort();
-    const prev = items;
-    const patch = { ...v, name, price, media, location: { city, country } };
-    setItems((xs) => xs.map((x) => (x.id === v.id ? patch : x)));
-    try {
-      await api(`/venues/${v.id}`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          name,
-          price,
-          media,
-          location: { city, country } }),
-      });
-      await sleep(250);
-      await load();
-    } catch (e: any) {
-      setItems(prev);
-      window.alert(e.message || "Update failed");
-    }
-  }
-
   async function onDelete(id: string) {
     if (!window.confirm("Delete this venue? This action cannot be undone and will cancel all bookings for this venue.")) return;
     loadCtrlRef.current?.abort();
