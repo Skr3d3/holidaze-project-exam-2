@@ -8,16 +8,28 @@ async function doFetch<T>(url: string, init: RequestInit = {}): Promise<T> {
     ...init,
   });
 
+  const contentType = res.headers.get("content-type") || "";
+  const text = await res.text();
+
   if (!res.ok) {
-    let body: any = null;
-    try { body = await res.json(); } catch {}
-    const msg = body?.message || body?.errors?.[0]?.message || `${res.status} ${res.statusText}`;
-    if (process.env.NODE_ENV === "development" && body?.errors?.[0]) {
-      console.debug("API error detail:", body.errors[0]);
+    let msg = `${res.status} ${res.statusText}`;
+    if (text) {
+      try {
+        const body = JSON.parse(text);
+        msg = body?.errors?.[0]?.message || body?.message || msg;
+      } catch {
+        msg = text || msg;
+      }
     }
     throw new Error(msg);
   }
-  return res.json();
+  if (res.status === 204 || !text.trim()) {
+    return null as unknown as T;
+  }
+  if (!contentType.includes("application/json")) {
+    return text as unknown as T;
+  }
+  return JSON.parse(text) as T;
 }
 
 export function apiAuth<T>(path: string, init?: RequestInit) {
